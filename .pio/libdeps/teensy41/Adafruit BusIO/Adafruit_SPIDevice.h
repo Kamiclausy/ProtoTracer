@@ -116,8 +116,8 @@ public:
 
 private:
 #ifdef BUSIO_HAS_HW_SPI
-  SPIClass *_spi = nullptr;
-  SPISettings *_spiSetting = nullptr;
+  SPIClass *_spi;
+  SPISettings *_spiSetting;
 #else
   uint8_t *_spi = nullptr;
   uint8_t *_spiSetting = nullptr;

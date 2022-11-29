@@ -54,6 +54,8 @@ private:
     float f1;
     float f2;
 
+    float threshold = 400.0f;
+
     void CalculateFormants(float* peaks, uint8_t bandwidth){
         //calculate forward and backward of bandwidth of sum for each peak for kernel density estimation
         for(int16_t i = 0; i < int16_t(peakCount); i++){
@@ -134,7 +136,7 @@ private:
         //update all viseme values
         for(uint8_t i = 0; i < visemeCount; i++) *visRatios[i] = 0.0f;
         
-        if(f1 > 500.0f || f2 > 500.0f){
+        if(f1 > threshold || f2 > threshold){
             Vector2D formant = Vector2D(f1, f2);
             uint8_t firstClosest = 0;
             float firstDistance = 1000000.0f;//arbitrary large value
@@ -155,54 +157,58 @@ private:
 public:
     FFTVoiceDetection(){}
 
+    void SetThreshold(float threshold){
+        this->threshold = threshold;
+    }
+
     float GetViseme(Viseme viseme){
         return *visRatios[viseme];
     }
 
     void PrintVisemes(){
-            float max = 0.0f;
-            uint8_t ind = 10;
+        float max = 0.0f;
+        uint8_t ind = 10;
+    
+        for(uint8_t i = 0; i < visemeCount; i++){
+            if(max < *visRatios[i]){
+                max = *visRatios[i];
+                ind = i;
+            }
+        }
         
-            for(uint8_t i = 0; i < visemeCount; i++){
-                if(max < *visRatios[i]){
-                    max = *visRatios[i];
-                    ind = i;
-                }
-            }
-            
-            if(ind < 7){
-                Serial.print(f1);
-                Serial.print(',');
-                Serial.print(f2);
-                Serial.print(',');
-            }
+        if(ind < 7){
+            Serial.print(f1);
+            Serial.print(',');
+            Serial.print(f2);
+            Serial.print(',');
+        }
 
-            switch(ind){
-                case EE:
-                    Serial.println("EE");
-                    break;
-                case AE:
-                    Serial.println("AE");
-                    break;
-                case UH:
-                    Serial.println("UH");
-                    break;
-                case AR:
-                    Serial.println("AR");
-                    break;
-                case ER:
-                    Serial.println("ER");
-                    break;
-                case AH:
-                    Serial.println("AH");
-                    break;
-                case OO:
-                    Serial.println("OO");
-                    break;
-                default:
-                    //Serial.println("?");
-                    break;
-            }
+        switch(ind){
+            case EE:
+                Serial.println("EE");
+                break;
+            case AE:
+                Serial.println("AE");
+                break;
+            case UH:
+                Serial.println("UH");
+                break;
+            case AR:
+                Serial.println("AR");
+                break;
+            case ER:
+                Serial.println("ER");
+                break;
+            case AH:
+                Serial.println("AH");
+                break;
+            case OO:
+                Serial.println("OO");
+                break;
+            default:
+                //Serial.println("?");
+                break;
+        }
     }
 
     void ResetVisemes(){
@@ -218,4 +224,3 @@ public:
         CalculateVisemeGroup();
     }
 };
-

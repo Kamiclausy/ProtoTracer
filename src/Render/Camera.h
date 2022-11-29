@@ -9,7 +9,6 @@
 #include "QuadTree.h"
 #include "Node.h"
 
-
 class Camera {
 private:
     Transform* transform;
@@ -67,6 +66,49 @@ public:
 
     Transform* GetTransform(){
         return transform;
+    }
+
+    PixelGroup* GetPixelGroup(){
+        return pixelGroup;
+    }
+
+    CameraLayout* GetCameraLayout(){
+        return cameraLayout;
+    }
+
+    Vector2D GetCameraMinCoordinate(){
+        Vector2D min;
+
+        for(uint16_t i = 0; i < pixelGroup->GetPixelCount(); i++){
+            if(cameraLayout->GetForwardAxis() == cameraLayout->XForward){
+                min.X = pixelGroup->GetPixel(i)->GetPosition().X < min.X ? pixelGroup->GetPixel(i)->GetPosition().X : min.X;
+                min.Y = pixelGroup->GetPixel(i)->GetPosition().Y < min.Y ? pixelGroup->GetPixel(i)->GetPosition().Y : min.Y;
+            }
+        }
+
+        return min;
+    }
+
+    Vector2D GetCameraMaxCoordinate(){
+        Vector2D max;
+
+        for(uint16_t i = 0; i < pixelGroup->GetPixelCount(); i++){
+            if(cameraLayout->GetForwardAxis() == cameraLayout->XForward){
+                max.X = pixelGroup->GetPixel(i)->GetPosition().X < max.X ? pixelGroup->GetPixel(i)->GetPosition().X : max.X;
+                max.Y = pixelGroup->GetPixel(i)->GetPosition().Y < max.Y ? pixelGroup->GetPixel(i)->GetPosition().Y : max.Y;
+            }
+        }
+
+        return max;
+    }
+
+    Vector2D GetCameraCenterCoordinate(){
+        Vector2D min, max;
+
+        min = GetCameraMinCoordinate();
+        max = GetCameraMaxCoordinate();
+
+        return (min + max) / 2.0f;
     }
 
     void SetLookOffset(Quaternion lookOffset){
