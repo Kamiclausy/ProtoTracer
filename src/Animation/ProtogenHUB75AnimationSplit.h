@@ -24,6 +24,8 @@
 
 #include "..\Sensors\MicrophoneFourier_MAX9814.h"
 
+#include "..\WiiChuck\WiiChuck.h"
+
 class ProtogenHUB75AnimationSplit : public Animation<2> {
 private:
     NukudeFace pM;
@@ -66,6 +68,8 @@ private:
     FunctionGenerator fGenMatRMenu = FunctionGenerator(FunctionGenerator::Sine, -5.0f, 5.0f, 1.7f);
 
     BoopSensor boop;
+
+    Accessory nunchuck;
 
     FFTVoiceDetection<128> voiceDetection;
 
@@ -160,6 +164,7 @@ private:
         eEA.AddParameterFrame(NukudeFace::Surprised, 1.0f);
         eEA.AddParameterFrame(NukudeFace::HideBlush, 0.0f);
         materialAnimator.AddMaterialFrame(rainbowSpiral, 0.8f);
+        //materialAnimator.AddMaterialFrame(purpleMaterial, 0.8f);
     }
     
     void Doubt(){
@@ -246,6 +251,11 @@ public:
 
         boop.Initialize(5);
 
+        nunchuck.begin();
+        if (nunchuck.type == Unknown) {
+            nunchuck.type = NUNCHUCK;
+        }
+
         MicrophoneFourier::Initialize(A0, 8000, 50.0f, 120.0f);//8KHz sample rate, 50dB min, 120dB max
         Menu::Initialize(9, 20, 500);//7 is number of faces
     }
@@ -278,6 +288,26 @@ public:
 
             bool isBooped = Menu::UseBoopSensor() ? boop.isBooped() : 0;
             uint8_t mode = Menu::GetFaceState();//change by button press
+
+            nunchuck.readData();
+            if (nunchuck.getJoyY() >= 224) {
+                mode = 1;
+            }
+            if (nunchuck.getJoyY() < 32) {
+                mode = 5;
+            }
+            if (nunchuck.getJoyX() >= 224) {
+                mode = 3;
+            }
+            if (nunchuck.getJoyX() < 32) {
+                mode = 2;
+            }
+            if (nunchuck.getButtonC()) {
+                mode = 6;
+            }
+            if (nunchuck.getButtonZ()) {
+                mode = 8;
+            }
 
             MicrophoneFourier::Update();
             sA.SetHueAngle(ratio * 360.0f * 4.0f);

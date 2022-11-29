@@ -6,9 +6,9 @@
 //#include "Animation\ProtoDRMorphAnimation.h"
 //#include "Animation\ProtogenKitFaceAnimation.h"
 //#include "Animation\ProtogenHUB75Animation.h"
-//#include "Animation\ProtogenHUB75AnimationSplit.h"
+#include "Animation\ProtogenHUB75AnimationSplit.h"
 //#include "Animation\Commissions\VesperAnimation.h"
-#include "Animation\Commissions\TechSaneAnimation.h"
+//#include "Animation\Commissions\TechSaneAnimation.h"
 //#include "Animation\KaiborgV1Animation.h"
 //#include "Animation\ProtoV3Animation.h"
 //#include "Animation\FullScreenAnimation.h"
@@ -38,7 +38,8 @@ ProtoDRController controller = ProtoDRController(maxBrightness, ProtoDRControlle
 //ProtoDRController controller = ProtoDRController(maxBrightness, ProtoDRController::LEFT);
 #endif
 SmartMatrixHUB75Split controller = SmartMatrixHUB75Split(maxBrightness);
-TechSaneAnimation animation = TechSaneAnimation();
+//SmartMatrixHUB75 controller = SmartMatrixHUB75(maxBrightness);
+ProtogenHUB75AnimationSplit animation = ProtogenHUB75AnimationSplit();
 
 void setup() {
     Serial.begin(115200);
